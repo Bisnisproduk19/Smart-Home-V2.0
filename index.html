@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Home Control</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mqtt/5.3.0/mqtt.min.js"></script>
+</head>
+<body>
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-brand">
+            <i class="fas fa-home"></i>
+            <span>Smart Home</span>
+        </div>
+        
+        <!-- STATUS KONEKSI -->
+        <div class="connection-status">
+            <div class="status-item">
+                <i class="fas fa-wifi"></i>
+                <span class="status-label">MQTT</span>
+                <span class="status-badge" id="mqttStatusBadge">● Offline</span>
+            </div>
+            <div class="status-item">
+                <i class="fas fa-microchip"></i>
+                <span class="status-label">ESP32</span>
+                <span class="status-badge" id="espStatusBadge">● Offline</span>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="#menu1" class="nav-link active" data-menu="1">
+                <i class="fas fa-lightbulb"></i>
+                <span>Menu 1: Lampu</span>
+            </a>
+            <a href="#menu2" class="nav-link" data-menu="2">
+                <i class="fas fa-temperature-high"></i>
+                <span>Menu 2: Sensor</span>
+            </a>
+            <a href="#menu3" class="nav-link" data-menu="3">
+                <i class="fas fa-plug"></i>
+                <span>Menu 3: Perangkat</span>
+            </a>
+        </nav>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+        <!-- HEADER -->
+        <header class="top-header">
+            <div class="header-left">
+                <button class="sidebar-toggle" id="sidebarToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <h1 id="pageTitle">Menu 1: Kontrol Lampu</h1>
+            </div>
+            <div class="header-right">
+                <div class="header-status">
+                    <span class="status-dot" id="mqttDot"></span>
+                    <span class="status-text" id="mqttStatusText">MQTT: Offline</span>
+                    <span class="status-divider">|</span>
+                    <span class="status-dot" id="espDot"></span>
+                    <span class="status-text" id="espStatusText">ESP32: Offline</span>
+                </div>
+                <span class="datetime" id="datetime"></span>
+            </div>
+        </header>
+
+        <!-- CONTENT -->
+        <div class="content-area">
+            <!-- MENU 1: Lampu -->
+            <section id="menu1" class="menu-section active">
+                <div class="menu-header">
+                    <h2><i class="fas fa-lightbulb"></i> Kontrol Lampu</h2>
+                    <div class="view-toggle">
+                        <button class="btn-toggle active" data-view="manual" data-menu="1">
+                            <i class="fas fa-hand"></i> Manual
+                        </button>
+                        <button class="btn-toggle" data-view="auto" data-menu="1">
+                            <i class="fas fa-clock"></i> Jadwal
+                        </button>
+                    </div>
+                </div>
+                <div id="view-manual" class="view-content active">
+                    <div class="relay-grid" id="lampuManual"></div>
+                </div>
+                <div id="view-auto" class="view-content">
+                    <div class="relay-grid" id="lampuAuto"></div>
+                </div>
+            </section>
+
+            <!-- MENU 2: Sensor -->
+            <section id="menu2" class="menu-section">
+                <div class="menu-header">
+                    <h2><i class="fas fa-temperature-high"></i> Data Sensor</h2>
+                </div>
+                <div class="sensor-grid" id="sensorGrid"></div>
+                <div class="info-container">
+                    <div class="info-box">
+                        <i class="fas fa-info-circle"></i>
+                        <p>Data sensor akan muncul setelah ESP32 terhubung dan sensor terpasang</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- MENU 3: Perangkat -->
+            <section id="menu3" class="menu-section">
+                <div class="menu-header">
+                    <h2><i class="fas fa-plug"></i> Kontrol Perangkat</h2>
+                    <div class="view-toggle">
+                        <button class="btn-toggle active" data-view="manual" data-menu="3">
+                            <i class="fas fa-hand"></i> Manual
+                        </button>
+                        <button class="btn-toggle" data-view="auto" data-menu="3">
+                            <i class="fas fa-clock"></i> Jadwal
+                        </button>
+                    </div>
+                </div>
+                <div id="view-manual3" class="view-content active">
+                    <div class="relay-grid" id="perangkatManual"></div>
+                </div>
+                <div id="view-auto3" class="view-content">
+                    <div class="relay-grid" id="perangkatAuto"></div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
