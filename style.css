@@ -11,16 +11,13 @@
     --sidebar-width: 260px;
     --sidebar-bg: #1a1a2e;
     --primary: #00b894;
-    --primary-dark: #00a381;
     --danger: #e74c3c;
-    --danger-dark: #c0392b;
     --bg-main: #f0f2f5;
     --card-bg: #ffffff;
     --text-primary: #1a1a2e;
     --text-secondary: #6c757d;
     --shadow: 0 2px 12px rgba(0,0,0,0.08);
     --radius: 12px;
-    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 body {
@@ -31,9 +28,6 @@ body {
     min-height: 100vh;
 }
 
-/* ============================================
-   SIDEBAR
-   ============================================ */
 .sidebar {
     position: fixed;
     top: 0;
@@ -50,14 +44,13 @@ body {
 }
 
 .sidebar-brand {
-    padding: 1.5rem 1.5rem 1rem;
+    padding: 1.5rem;
     display: flex;
     align-items: center;
     gap: 0.75rem;
     font-size: 1.5rem;
     font-weight: 700;
     border-bottom: 1px solid rgba(255,255,255,0.05);
-    padding-bottom: 1.5rem;
 }
 
 .sidebar-brand i {
@@ -65,9 +58,6 @@ body {
     font-size: 1.8rem;
 }
 
-/* ============================================
-   STATUS KONEKSI DI SIDEBAR
-   ============================================ */
 .connection-status {
     padding: 1rem 1.25rem;
     border-bottom: 1px solid rgba(255,255,255,0.05);
@@ -88,7 +78,6 @@ body {
 
 .status-item i {
     width: 1.2rem;
-    font-size: 0.9rem;
     color: rgba(255,255,255,0.5);
 }
 
@@ -103,7 +92,6 @@ body {
     font-weight: 600;
     padding: 0.15rem 0.6rem;
     border-radius: 12px;
-    transition: var(--transition);
 }
 
 .status-badge.online {
@@ -116,20 +104,6 @@ body {
     color: #e74c3c;
 }
 
-.status-badge.connecting {
-    background: rgba(243, 156, 18, 0.2);
-    color: #f39c12;
-    animation: pulse 1s infinite;
-}
-
-@keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.5; }
-}
-
-/* ============================================
-   SIDEBAR NAV
-   ============================================ */
 .sidebar-nav {
     flex: 1;
     padding: 1.5rem 0.75rem;
@@ -146,16 +120,10 @@ body {
     border-radius: var(--radius);
     color: rgba(255,255,255,0.6);
     text-decoration: none;
-    transition: var(--transition);
+    transition: all 0.3s;
     cursor: pointer;
     font-weight: 500;
     position: relative;
-}
-
-.sidebar-nav .nav-link i {
-    width: 1.5rem;
-    font-size: 1.1rem;
-    text-align: center;
 }
 
 .sidebar-nav .nav-link:hover {
@@ -180,9 +148,6 @@ body {
     border-radius: 0 4px 4px 0;
 }
 
-/* ============================================
-   MAIN CONTENT
-   ============================================ */
 .main-content {
     margin-left: var(--sidebar-width);
     flex: 1;
@@ -191,9 +156,6 @@ body {
     flex-direction: column;
 }
 
-/* ============================================
-   TOP HEADER
-   ============================================ */
 .top-header {
     background: var(--card-bg);
     padding: 0.75rem 2rem;
@@ -221,7 +183,6 @@ body {
     cursor: pointer;
     padding: 0.25rem 0.5rem;
     border-radius: 8px;
-    transition: var(--transition);
 }
 
 .sidebar-toggle:hover {
@@ -231,12 +192,8 @@ body {
 .header-left h1 {
     font-size: 1.1rem;
     font-weight: 600;
-    color: var(--text-primary);
 }
 
-/* ============================================
-   STATUS DI HEADER
-   ============================================ */
 .header-right {
     display: flex;
     align-items: center;
@@ -258,7 +215,6 @@ body {
     height: 8px;
     border-radius: 50%;
     display: inline-block;
-    transition: var(--transition);
 }
 
 .status-dot.online {
@@ -269,11 +225,6 @@ body {
 .status-dot.offline {
     background: #e74c3c;
     box-shadow: 0 0 8px rgba(231, 76, 60, 0.4);
-}
-
-.status-dot.connecting {
-    background: #f39c12;
-    animation: pulse 1s infinite;
 }
 
 .status-text {
@@ -301,9 +252,6 @@ body {
     white-space: nowrap;
 }
 
-/* ============================================
-   CONTENT AREA
-   ============================================ */
 .content-area {
     padding: 1.5rem 2rem 2rem;
     flex: 1;
@@ -337,7 +285,6 @@ body {
 .menu-header h2 {
     font-size: 1.3rem;
     font-weight: 600;
-    color: var(--text-primary);
 }
 
 .menu-header h2 i {
@@ -358,7 +305,6 @@ body {
     cursor: pointer;
     font-weight: 500;
     font-size: 0.85rem;
-    transition: var(--transition);
     color: var(--text-secondary);
 }
 
@@ -385,9 +331,6 @@ body {
     display: block;
 }
 
-/* ============================================
-   RELAY GRID
-   ============================================ */
 .relay-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
@@ -399,7 +342,7 @@ body {
     border-radius: var(--radius);
     padding: 1.25rem;
     box-shadow: var(--shadow);
-    transition: var(--transition);
+    transition: all 0.3s;
     border-left: 4px solid #dee2e6;
 }
 
@@ -439,7 +382,6 @@ body {
     height: 10px;
     border-radius: 50%;
     margin-left: auto;
-    transition: all 0.3s;
 }
 
 .relay-name .status-dot-small.on {
@@ -475,7 +417,6 @@ body {
     border-radius: 6px;
     font-weight: 600;
     cursor: pointer;
-    transition: var(--transition);
     color: #fff;
     font-size: 0.85rem;
 }
@@ -485,7 +426,7 @@ body {
 }
 
 .btn-relay.on:hover {
-    background: var(--danger-dark);
+    background: #c0392b;
 }
 
 .btn-relay.off {
@@ -493,43 +434,9 @@ body {
 }
 
 .btn-relay.off:hover {
-    background: var(--primary-dark);
+    background: #00a381;
 }
 
-.time-control {
-    margin-top: 0.75rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.4rem;
-}
-
-.time-control label {
-    font-size: 0.75rem;
-    color: var(--text-secondary);
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.time-control input[type="time"] {
-    padding: 0.3rem 0.5rem;
-    border: 1px solid #dee2e6;
-    border-radius: 4px;
-    font-size: 0.8rem;
-    width: 100%;
-    background: #f8f9fa;
-}
-
-.schedule-status {
-    font-size: 0.7rem;
-    color: #f39c12;
-    font-weight: 500;
-    margin-top: 0.25rem;
-}
-
-/* ============================================
-   SENSOR GRID
-   ============================================ */
 .sensor-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
@@ -543,16 +450,9 @@ body {
     padding: 1.5rem;
     box-shadow: var(--shadow);
     text-align: center;
-    transition: var(--transition);
-}
-
-.sensor-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 6px 20px rgba(0,0,0,0.12);
 }
 
 .sensor-card h4 {
-    color: var(--text-primary);
     margin-bottom: 0.75rem;
     font-size: 1rem;
 }
@@ -598,9 +498,6 @@ body {
     font-size: 0.75rem;
 }
 
-/* ============================================
-   INFO CONTAINER
-   ============================================ */
 .info-container {
     margin-top: 1.5rem;
 }
@@ -626,9 +523,6 @@ body {
     font-size: 0.95rem;
 }
 
-/* ============================================
-   TOAST NOTIFICATION
-   ============================================ */
 .toast-notification {
     position: fixed;
     bottom: 2rem;
@@ -653,9 +547,6 @@ body {
     to { transform: translateX(0); opacity: 1; }
 }
 
-/* ============================================
-   RESPONSIVE
-   ============================================ */
 @media (max-width: 768px) {
     .sidebar {
         transform: translateX(-100%);
@@ -698,10 +589,6 @@ body {
         font-size: 0.7rem;
     }
 
-    .header-left h1 {
-        font-size: 0.9rem;
-    }
-
     .menu-header {
         flex-direction: column;
         align-items: flex-start;
@@ -725,15 +612,8 @@ body {
         font-size: 0.75rem;
         padding: 0.35rem 0.6rem;
     }
-
-    .sensor-value {
-        font-size: 1.5rem;
-    }
 }
 
-/* ============================================
-   SCROLLBAR
-   ============================================ */
 ::-webkit-scrollbar {
     width: 6px;
     height: 6px;
