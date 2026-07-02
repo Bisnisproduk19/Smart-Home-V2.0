@@ -16,6 +16,14 @@ const client = mqtt.connect(mqttConfig.host, {
 });
 
 // ============================================
+// ⚙️ KONFIGURASI TIMING
+// ============================================
+
+const HEARTBEAT_TIMEOUT = 500;   // 4 detik - ESP32 dianggap offline
+const CHECK_INTERVAL = 1000;      // 1 detik - Cek status
+const COMMAND_TIMEOUT = 5000;     // 5 detik - Timeout perintah relay
+
+// ============================================
 // KONFIGURASI 13 RELAY
 // ============================================
 
@@ -49,18 +57,16 @@ const SENSOR_LOKASI = [
     { id: 'lantai_atas', label: 'Lantai Atas', icon: '🏢', pin: 39 }
 ];
 
-let sensorData = {};
-
 // ============================================
 // STATE
 // ============================================
 
 let relayStates = {};
+let sensorData = {};
 let espOnline = false;
 let lastHeartbeat = 0;
 let everOnline = false;
 let pendingCommands = {};
-const commandTimeout = 5000;
 
 // ============================================
 // FUNGSI UTILITY
@@ -109,7 +115,7 @@ function getPinInfo(relayId) {
 }
 
 // ============================================
-// UPDATE STATUS
+// UPDATE STATUS - DENGAN HEARTBEAT TIMEOUT CEPAT
 // ============================================
 
 function updateMQTTStatus(isConnected) {
@@ -171,6 +177,8 @@ function updateSensorUI(sensorId, suhu, kelembapan) {
 // ============================================
 
 function sendRelayCommand(relayId, command) {
+    console.log(`📤 [CMD] Relay ${relayId} -> ${command}`);
+    
     if (!client || !client.connected) {
         showToast('❌ MQTT tidak terhubung!', 'error');
         return;
@@ -209,7 +217,7 @@ function sendRelayCommand(relayId, command) {
             showToast(`⚠️ ${getRelayName(relayId)} tidak merespon!`, 'warning', 4000);
             delete pendingCommands[relayId];
         }
-    }, commandTimeout);
+    }, COMMAND_TIMEOUT);
 }
 
 window.toggleRelay = function(relayId) {
@@ -323,10 +331,31 @@ function renderSensorGrid() {
 }
 
 // ============================================
+// ✅ CHECK ESP32 ONLINE - HEARTBEAT TIMEOUT CEPAT
+// ============================================
+
+setInterval(() => {
+    const now = Date.now();
+    
+    // Jika belum pernah online dan sudah > 5 detik
+    if (!everOnline && now > 5000) {
+        updateESPStatus(false);
+    }
+    
+    // Jika heartbeat terakhir > timeout (4 detik), maka offline
+    if (everOnline && now - lastHeartbeat > HEARTBEAT_TIMEOUT) {
+        updateESPStatus(false);
+        everOnline = false;
+        console.warn(`⚠️ ESP32 heartbeat timeout - OFFLINE (${now - lastHeartbeat}ms)`);
+    }
+}, CHECK_INTERVAL);
+
+// ============================================
 // MQTT EVENTS
 // ============================================
 
 client.on("connect", () => {
+    console.log("✅ [MQTT] Connected!");
     updateMQTTStatus(true);
     showToast('MQTT Terhubung! ✅', 'success');
     
@@ -347,13 +376,14 @@ client.on("connect", () => {
 });
 
 client.on("offline", () => {
+    console.warn("⚠️ [MQTT] Disconnected!");
     updateMQTTStatus(false);
     updateESPStatus(false);
     showToast('Koneksi MQTT terputus!', 'warning');
 });
 
 client.on("error", (err) => {
-    console.error('MQTT Error:', err);
+    console.error("❌ [MQTT] Error:", err);
     updateMQTTStatus(false);
 });
 
@@ -363,19 +393,20 @@ client.on("error", (err) => {
 
 client.on("message", (topic, message) => {
     const data = message.toString();
+    console.log(`📨 [MQTT] ${topic} -> ${data}`);
 
-    // ESP Status
+    // ===== ESP STATUS =====
     if (topic === "home/esp/status") {
         if (data === "ONLINE") {
             lastHeartbeat = Date.now();
             everOnline = true;
             updateESPStatus(true);
-            showToast('ESP32 Online! ✅', 'success');
+            console.log(`✅ [HEARTBEAT] Received at ${new Date().toLocaleTimeString()}`);
         }
         return;
     }
 
-    // Relay Status
+    // ===== RELAY STATUS =====
     const relayMatch = topic.match(/home\/relay\/(\d+)\/status/);
     if (relayMatch) {
         const relayId = parseInt(relayMatch[1]);
@@ -389,14 +420,14 @@ client.on("message", (topic, message) => {
         return;
     }
 
-    // ACK
+    // ===== ACK =====
     const ackMatch = topic.match(/home\/relay\/(\d+)\/ack/);
     if (ackMatch) {
         console.log(`✅ ACK Relay ${ackMatch[1]}`);
         return;
     }
 
-    // Sensor Suhu
+    // ===== SENSOR SUHU =====
     const suhuMatch = topic.match(/home\/sensor\/(.+)\/suhu/);
     if (suhuMatch) {
         const sensorId = suhuMatch[1];
@@ -407,7 +438,7 @@ client.on("message", (topic, message) => {
         return;
     }
 
-    // Sensor Kelembapan
+    // ===== SENSOR KELEMBAPAN =====
     const humMatch = topic.match(/home\/sensor\/(.+)\/kelembapan/);
     if (humMatch) {
         const sensorId = humMatch[1];
@@ -418,19 +449,6 @@ client.on("message", (topic, message) => {
         return;
     }
 });
-
-// ============================================
-// CHECK ESP32 ONLINE
-// ============================================
-
-setInterval(() => {
-    const now = Date.now();
-    if (!everOnline && now > 5000) updateESPStatus(false);
-    if (everOnline && now - lastHeartbeat > 10000) {
-        updateESPStatus(false);
-        everOnline = false;
-    }
-}, 2000);
 
 // ============================================
 // NAVIGATION
@@ -517,6 +535,7 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('🏠 [APP] Dashboard Smart Home starting...');
     console.log(`📌 Total Relay: ${TOTAL_RELAY}`);
     console.log(`📌 Sensor DHT22: ${SENSOR_LOKASI.length}`);
+    console.log(`⚙️ Heartbeat Timeout: ${HEARTBEAT_TIMEOUT}ms`);
     
     for (let i = 1; i <= TOTAL_RELAY; i++) {
         relayStates[i] = false;
@@ -525,4 +544,7 @@ document.addEventListener('DOMContentLoaded', function() {
     updateMQTTStatus(false);
     updateESPStatus(false);
     renderAll();
+    
+    console.log('✅ [APP] Dashboard siap!');
+    console.log('📋 Menunggu koneksi MQTT...');
 });
